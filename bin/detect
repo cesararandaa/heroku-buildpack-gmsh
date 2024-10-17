@@ -1,0 +1,10 @@
+# bin/detect
+
+#!/usr/bin/env bash
+
+if [ -n "$GMSH_VERSION" ]; then
+  echo "gmsh-buildpack"
+  exit 0
+else
+  exit 1
+fi

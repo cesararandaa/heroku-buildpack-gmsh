@@ -1,0 +1,53 @@
+# bin/compile
+
+#!/usr/bin/env bash
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+set -e
+
+# Define the version of gmsh to install. Default to 4.12.1 if not specified.
+GMSH_VERSION=${GMSH_VERSION:-4.12.1}
+
+# Define download URL for the precompiled gmsh binary
+GMSH_URL="https://gmsh.info/bin/Linux/gmsh-${GMSH_VERSION}-Linux64.tgz"
+
+# Create a temporary directory for downloading
+TMP_DIR=$(mktemp -d)
+
+# Navigate to the temporary directory
+cd $TMP_DIR
+
+# Download the gmsh binary
+echo "Downloading gmsh version ${GMSH_VERSION} from ${GMSH_URL}"
+wget $GMSH_URL -O gmsh.tgz
+
+# Extract the downloaded tarball
+echo "Extracting gmsh..."
+tar -xzf gmsh.tgz
+
+# Find the extracted directory (assumes standard naming)
+GMSH_DIR=$(find . -maxdepth 1 -type d -name "gmsh-${GMSH_VERSION}-Linux64" | head -n 1)
+
+if [ -z "$GMSH_DIR" ]; then
+  echo "Error: gmsh directory not found after extraction."
+  exit 1
+fi
+
+# Move gmsh binary to the build directory's bin/
+mkdir -p $BUILD_DIR/bin
+cp $GMSH_DIR/gmsh $BUILD_DIR/bin/
+
+# Clean up temporary directory
+cd /
+rm -rf $TMP_DIR
+
+# Make sure gmsh is executable
+chmod +x $BUILD_DIR/bin/gmsh
+
+# Add bin directory to PATH
+echo "Adding gmsh to PATH..."
+echo "export PATH=\$PATH:$BUILD_DIR/bin" >> $BUILD_DIR/.profile.d/gmsh.sh
+
+echo "gmsh ${GMSH_VERSION} installed successfully."
