@@ -1,5 +1,4 @@
 # bin/compile
-
 #!/usr/bin/env bash
 
 BUILD_DIR=$1
@@ -46,8 +45,7 @@ rm -rf $TMP_DIR
 # Make sure gmsh is executable
 chmod +x $BUILD_DIR/bin/gmsh
 
-# Add bin directory to PATH
-echo "Adding gmsh to PATH..."
-echo "export PATH=\$PATH:$BUILD_DIR/bin" >> $BUILD_DIR/.profile.d/gmsh.sh
+# Add bin directory to PATH by prepending
+echo "export PATH=/app/bin:\$PATH" > $BUILD_DIR/.profile.d/gmsh.sh
 
 echo "gmsh ${GMSH_VERSION} installed successfully."

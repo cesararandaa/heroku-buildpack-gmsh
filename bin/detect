@@ -1,5 +1,4 @@
 # bin/detect
-
 #!/usr/bin/env bash
 
 if [ -n "$GMSH_VERSION" ]; then
